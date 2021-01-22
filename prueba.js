@@ -13,8 +13,10 @@ const renderView = (fragment, element = '#root') => {
 };
 
 const addEventListeners = state => {
-  $('#increment').on('click', actions.increment);
-  $('#decrement').on('click', actions.decrement);
+  if (state.status === 'home') {
+    $('#increment').on('click', actions.increment);
+    $('#decrement').on('click', actions.decrement);
+  }
 };
 
 const actions = {
@@ -25,6 +27,10 @@ const actions = {
   decrement: function () {
     //consultar la api
     dispacher.emit('decrement', {});
+  },
+  init: function () {
+    //consultar la api
+    dispacher.emit('init', {});
   },
 };
 
@@ -37,7 +43,7 @@ const dispacher = {
 };
 
 const store = {
-  state: { value: 0 },
+  state: { value: 0, status: 'home' },
   onAction: {
     incrementer: function (action) {
       if (action.name === 'increment') {
@@ -51,13 +57,13 @@ const store = {
         renderView(Component(store.state.value));
       }
     },
+    init: function (action) {
+      if (action.name === 'init') renderView(Component(store.state.value));
+    },
   },
   getState: function () {
     return Object.assign({}, this.state);
   },
-  initial: function () {
-    renderView(Component(this.state.value));
-  },
 };
 
-store.initial();
+actions.init();
