@@ -1,6 +1,12 @@
 const Component = state => {
   const template = `
-  <p>${state}</p>
+  <p id="value">${state}</p>
+  `;
+  return template;
+};
+
+const Buttons = () => {
+  const template = `
   <button id="increment">+</button>
   <button id="decrement">-</button>
   `;
@@ -48,17 +54,22 @@ const store = {
     incrementer: function (action) {
       if (action.name === 'increment') {
         store.state.value++;
-        renderView(Component(store.state.value));
+        $('#value').text(store.state.value);
       }
     },
     decrementer: function (action) {
       if (action.name === 'decrement') {
         store.state.value--;
-        renderView(Component(store.state.value));
+        $('#value').text(store.state.value);
       }
     },
     init: function (action) {
-      if (action.name === 'init') renderView(Component(store.state.value));
+      if (action.name === 'init') {
+        const template = document.createElement('template');
+        template.innerHTML += Component(store.state.value);
+        template.innerHTML += Buttons();
+        renderView(template.content);
+      }
     },
   },
   getState: function () {
